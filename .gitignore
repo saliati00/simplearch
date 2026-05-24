@@ -1,0 +1,8 @@
+# Pastas temporárias de compilação do YAY/AUR
+*-build-*/
+yay/
+
+# Arquivos de log e backups
+*.log
+*.bak
+*~
