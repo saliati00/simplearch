@@ -1,0 +1,113 @@
+# Base live system
+base
+linux
+linux-firmware
+amd-ucode
+intel-ucode
+arch-install-scripts
+archiso
+mkinitcpio
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+sudo
+
+# Boot, filesystems and install tooling
+btrfs-progs
+dosfstools
+efibootmgr
+grub
+gptfdisk
+parted
+rsync
+squashfs-tools
+syslinux
+nbd
+pv
+
+# Network and hardware
+networkmanager
+wireless-regdb
+wpa_supplicant
+bluez
+bluez-utils
+bolt
+fwupd
+modemmanager
+usbutils
+pciutils
+smartmontools
+qemu-guest-agent
+spice-vdagent
+
+# Desktop live environment
+plasma-meta
+xcb-util-cursor
+sddm
+konsole
+dolphin
+kate
+ark
+gwenview
+okular
+spectacle
+discover
+firefox
+firefox-i18n-pt-br
+
+# Calamares installer
+calamares
+os-prober
+
+# Audio, portals and desktop integration
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+xdg-desktop-portal
+xdg-desktop-portal-kde
+flatpak
+flatpak-kcm
+
+# Btrfs snapshots and recovery
+snapper
+snap-pac
+grub-btrfs
+btrfs-assistant
+btrfsmaintenance
+
+# Security and system defaults
+ufw
+zram-generator
+reflector
+pacman-contrib
+
+# Terminal and maintenance tools
+base-devel
+git
+curl
+wget
+nano
+vim
+htop
+ripgrep
+openssh
+zsh
+zsh-completions
+zsh-syntax-highlighting
+zsh-autosuggestions
+unzip
+zip
+unrar
+7zip
+
+# Fonts and localization
+noto-fonts
+noto-fonts-emoji
+ttf-hack
+
+# Mesa default graphics stack
+mesa
+mesa-utils
+vulkan-icd-loader
+vulkan-tools

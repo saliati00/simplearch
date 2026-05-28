@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = calamares
+
+[Action]
+Description = Hiding upstream Calamares launcher in the live ISO...
+When = PostTransaction
+Exec = /usr/bin/sh -c 'if [ -f /usr/share/applications/calamares.desktop ]; then printf "\nNoDisplay=true\nHidden=true\n" >> /usr/share/applications/calamares.desktop; fi'
+

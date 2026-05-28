@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+target="${1:-}"
+choice="${2:-mesa}"
+
+if [[ -z "$target" || ! -d "$target" ]]; then
+    echo "Target root not found: $target" >&2
+    exit 1
+fi
+
+case "$choice" in
+    ""|"mesa")
+        echo "Using Mesa graphics stack."
+        exit 0
+        ;;
+    "nvidia")
+        packages=(dkms linux-headers nvidia-dkms nvidia-utils)
+        ;;
+    "nvidia-open")
+        packages=(dkms linux-headers nvidia-open-dkms nvidia-utils)
+        ;;
+    *)
+        echo "Unknown GPU driver choice: $choice" >&2
+        exit 1
+        ;;
+esac
+
+live_repo="/opt/simplearch/offline-repo"
+target_repo="$target/opt/simplearch/offline-repo"
+target_pacman_conf="$target/tmp/simplearch-gpu-pacman.conf"
+
+if [[ ! -f "$live_repo/simplearch-optional.db" && ! -f "$live_repo/simplearch-optional.db.tar.zst" ]]; then
+    echo "Optional offline repository not found at $live_repo" >&2
+    exit 1
+fi
+
+mkdir -p "$target_repo" "$target/tmp"
+mount --bind "$live_repo" "$target_repo"
+trap 'umount "$target_repo" 2>/dev/null || true; rm -f "$target_pacman_conf"' EXIT
+
+{
+    echo "[options]"
+    echo "Architecture = auto"
+    echo "CheckSpace"
+    echo "ParallelDownloads = 5"
+    echo "SigLevel = Optional TrustAll"
+    echo "LocalFileSigLevel = Optional"
+    echo
+    echo "[simplearch-optional]"
+    echo "SigLevel = Optional TrustAll"
+    echo "Server = file:///opt/simplearch/offline-repo"
+} > "$target_pacman_conf"
+
+echo "Installing GPU driver packages from offline repository: ${packages[*]}"
+arch-chroot "$target" pacman -Sy --needed --noconfirm --config /tmp/simplearch-gpu-pacman.conf "${packages[@]}"
+
+mkinitcpio_conf="$target/etc/mkinitcpio.conf"
+if [[ -f "$mkinitcpio_conf" ]]; then
+    tmp_conf="$(mktemp)"
+    found_modules=0
+    while IFS= read -r line; do
+        if [[ "$line" == MODULES=\(* ]]; then
+            found_modules=1
+            current="${line#MODULES=(}"
+            current="${current%)}"
+            merged=()
+            for module in nvidia nvidia_modeset nvidia_uvm nvidia_drm $current; do
+                present=0
+                for existing in "${merged[@]}"; do
+                    [[ "$existing" == "$module" ]] && present=1
+                done
+                [[ "$present" -eq 0 ]] && merged+=("$module")
+            done
+            printf 'MODULES=(%s)\n' "${merged[*]}" >> "$tmp_conf"
+        else
+            printf '%s\n' "$line" >> "$tmp_conf"
+        fi
+    done < "$mkinitcpio_conf"
+    if [[ "$found_modules" -eq 0 ]]; then
+        {
+            printf 'MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)\n'
+            cat "$tmp_conf"
+        } > "${tmp_conf}.new"
+        mv "${tmp_conf}.new" "$tmp_conf"
+    fi
+    cat "$tmp_conf" > "$mkinitcpio_conf"
+    rm -f "$tmp_conf"
+fi
+
+grub_default="$target/etc/default/grub"
+if [[ -f "$grub_default" ]]; then
+    tmp_grub="$(mktemp)"
+    found_cmdline=0
+    while IFS= read -r line; do
+        if [[ "$line" == GRUB_CMDLINE_LINUX_DEFAULT=\"* ]]; then
+            found_cmdline=1
+            value="${line#GRUB_CMDLINE_LINUX_DEFAULT=\"}"
+            value="${value%\"}"
+            if [[ " $value " != *" nvidia-drm.modeset=1 "* ]]; then
+                value="${value:+$value }nvidia-drm.modeset=1"
+            fi
+            printf 'GRUB_CMDLINE_LINUX_DEFAULT="%s"\n' "$value" >> "$tmp_grub"
+        else
+            printf '%s\n' "$line" >> "$tmp_grub"
+        fi
+    done < "$grub_default"
+    if [[ "$found_cmdline" -eq 0 ]]; then
+        printf 'GRUB_CMDLINE_LINUX_DEFAULT="nvidia-drm.modeset=1"\n' >> "$tmp_grub"
+    fi
+    cat "$tmp_grub" > "$grub_default"
+    rm -f "$tmp_grub"
+fi

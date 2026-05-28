@@ -1,0 +1,45 @@
+---
+componentName: simplearch
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+
+windowExpanding: normal
+windowSize: 880px,560px
+windowPlacement: center
+
+sidebar: widget
+navigation: widget
+
+strings:
+    productName: "SimpleArch"
+    shortProductName: "SimpleArch"
+    version: "rolling"
+    shortVersion: "rolling"
+    versionedName: "SimpleArch"
+    shortVersionedName: "SimpleArch"
+    bootloaderEntryName: "SimpleArch"
+    productUrl: "https://github.com/saliati00/simplearch"
+    supportUrl: ""
+    knownIssuesUrl: ""
+    releaseNotesUrl: ""
+    donateUrl: ""
+
+style:
+    SidebarBackground: "#232629"
+    SidebarText: "#FFFFFF"
+    SidebarTextCurrent: "#FFFFFF"
+    SidebarBackgroundCurrent: "#1D99F3"
+
+images:
+    productIcon: "../default/squid.png"
+    productLogo: "../default/squid.png"
+    productWelcome: "../default/languages.png"
+
+slideshow: "show.qml"
+slideshowAPI: 2
+
+uploadServer:
+    type: "none"
+    url: ""
+    sizeLimit: -1

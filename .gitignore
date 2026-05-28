@@ -6,3 +6,28 @@ yay/
 *.log
 *.bak
 *~
+
+# Saidas locais do archiso
+out/
+work/
+simplearch-build/
+localrepo/
+
+# Saidas locais de makepkg
+packages/*/src/
+packages/*/pkg/
+packages/*/*.pkg.tar.*
+packages/*/*.log
+packages/*/*.tar.gz
+packages/*/*.zip
+
+# Artefatos grandes gerados localmente
+*.iso
+*.img
+*.qcow2
+vendor/*.zip
+
+# Arquivos locais/sensíveis de tentativas anteriores
+docs/
+user_*.json
+user*.json

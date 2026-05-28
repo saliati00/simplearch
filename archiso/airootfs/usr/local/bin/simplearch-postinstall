@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+target="${1:-}"
+username="${2:-}"
+
+if [[ -z "$target" || ! -d "$target" ]]; then
+    echo "Target root not found: $target" >&2
+    exit 1
+fi
+
+echo "Preparing Simple Arch defaults for ${username:-created user}."
+
+install -d -m 755 "$target/boot" "$target/etc/mkinitcpio.d"
+
+if [[ ! -r "$target/boot/vmlinuz-linux" ]]; then
+    kernel_source=""
+    for candidate in \
+        "$target"/usr/lib/modules/*/vmlinuz \
+        /run/archiso/bootmnt/simplearch/boot/x86_64/vmlinuz-linux \
+        /run/archiso/bootmnt/simplearch/boot/vmlinuz-linux \
+        /run/archiso/bootmnt/boot/x86_64/vmlinuz-linux \
+        /boot/vmlinuz-linux; do
+        if [[ -r "$candidate" ]]; then
+            kernel_source="$candidate"
+            break
+        fi
+    done
+
+    if [[ -z "$kernel_source" ]]; then
+        echo "Could not find a readable linux kernel image for target /boot." >&2
+        exit 1
+    fi
+
+    install -m 644 "$kernel_source" "$target/boot/vmlinuz-linux"
+fi
+
+rm -f "$target/etc/mkinitcpio.conf.d/archiso.conf"
+
+cat > "$target/etc/mkinitcpio.d/linux.preset" <<'EOF'
+# mkinitcpio preset file for the linux package
+
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinuz-linux"
+
+PRESETS=('default' 'fallback')
+
+default_image="/boot/initramfs-linux.img"
+
+fallback_image="/boot/initramfs-linux-fallback.img"
+fallback_options="-S autodetect"
+EOF
+
+if [[ -f "$target/etc/mkinitcpio.conf" ]]; then
+    modules_line="$(grep -E '^MODULES=' "$target/etc/mkinitcpio.conf" | head -n1 || true)"
+else
+    modules_line=""
+fi
+
+if [[ -z "$modules_line" ]]; then
+    modules_line="MODULES=()"
+fi
+
+cat > "$target/etc/mkinitcpio.conf" <<EOF
+$modules_line
+BINARIES=()
+FILES=()
+HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block filesystems fsck)
+EOF
+
+arch-chroot "$target" locale-gen
+
+if [[ -f "$target/etc/pacman.conf" ]] && ! grep -q '^\[multilib\]' "$target/etc/pacman.conf"; then
+    cat >> "$target/etc/pacman.conf" <<'EOF'
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+EOF
+fi
+
+mkdir -p "$target/etc/systemd"
+cat > "$target/etc/systemd/zram-generator.conf" <<'EOF'
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+EOF
+
+if [[ -n "$username" && -d "$target/home/$username" ]]; then
+    arch-chroot "$target" chsh -s /bin/zsh "$username"
+fi
+
+mkdir -p "$target/etc/snapper/configs"
+if [[ ! -f "$target/etc/snapper/configs/root" ]]; then
+    arch-chroot "$target" snapper -c root create-config / || true
+fi
+
+snapper_root="$target/etc/snapper/configs/root"
+if [[ -f "$snapper_root" ]]; then
+    sed -i \
+        -e 's/^ALLOW_USERS=.*/ALLOW_USERS="wheel"/' \
+        -e 's/^TIMELINE_CREATE=.*/TIMELINE_CREATE="no"/' \
+        -e 's/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY="0"/' \
+        -e 's/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY="3"/' \
+        -e 's/^TIMELINE_LIMIT_WEEKLY=.*/TIMELINE_LIMIT_WEEKLY="0"/' \
+        -e 's/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY="0"/' \
+        -e 's/^TIMELINE_LIMIT_YEARLY=.*/TIMELINE_LIMIT_YEARLY="0"/' \
+        "$snapper_root"
+fi

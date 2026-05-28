@@ -1,0 +1,8 @@
+# Optional packages embedded in the live ISO for offline Calamares choices.
+# These are not installed in the live system through packages.x86_64.
+
+dkms
+linux-headers
+nvidia-dkms
+nvidia-open-dkms
+nvidia-utils

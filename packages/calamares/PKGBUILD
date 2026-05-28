@@ -1,0 +1,66 @@
+# Maintainer: Simple Arch
+
+pkgname=calamares
+pkgver=3.4.2
+pkgrel=1
+pkgdesc="Distribution-independent installer framework"
+arch=('x86_64')
+url="https://calamares.io/"
+license=('GPL-3.0-or-later' 'LGPL-2.1-only' 'LGPL-3.0-or-later' 'MIT' 'BSD-2-Clause' 'CC0-1.0')
+options=('!debug')
+depends=(
+  'boost-libs'
+  'icu'
+  'kcoreaddons'
+  'kcrash'
+  'kpmcore'
+  'libpwquality'
+  'polkit-qt6'
+  'python'
+  'qt6-base'
+  'qt6-declarative'
+  'qt6-svg'
+  'yaml-cpp'
+)
+makedepends=(
+  'boost'
+  'cmake'
+  'extra-cmake-modules'
+  'ninja'
+  'python-jsonschema'
+  'qt6-tools'
+)
+optdepends=(
+  'ckbcomp: keyboard layout conversion support'
+  'cryptsetup: encrypted installation support'
+  'dosfstools: FAT filesystem support'
+  'e2fsprogs: ext filesystem support'
+  'grub: GRUB bootloader installation'
+  'os-prober: detect other installed operating systems'
+  'rsync: filesystem copy support'
+  'squashfs-tools: unpack squashfs images'
+)
+_repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
+source=("${pkgname}-${pkgver}.tar.gz::file://${_repo_root}/vendor/${pkgname}-${pkgver}.tar.gz")
+sha256sums=('733bbbb00dc9f84874bd5c22960952f317ea2537565431179fa2152b2fbfdccc')
+
+build() {
+  cmake -S "${pkgname}-${pkgver}" -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=None \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DINSTALL_CONFIG=OFF \
+    -DINSTALL_POLKIT=ON \
+    -DINSTALL_COMPLETION=ON \
+    -DWITH_QT6=ON \
+    -DWITH_PYTHON=ON \
+    -DWITH_PYBIND11=ON \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_SCHEMA_TESTING=OFF
+
+  cmake --build build
+}
+
+package() {
+  DESTDIR="${pkgdir}" cmake --install build
+}

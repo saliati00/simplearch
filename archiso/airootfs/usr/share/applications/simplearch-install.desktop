@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install SimpleArch
+Name[pt_BR]=Instalar SimpleArch
+GenericName=System Installer
+GenericName[pt_BR]=Instalador do sistema
+Comment=Install SimpleArch on this computer
+Comment[pt_BR]=Instale o SimpleArch neste computador
+Keywords=calamares;system;installer;simplearch;
+TryExec=calamares
+Exec=pkexec /usr/bin/calamares
+Icon=calamares
+Terminal=false
+StartupNotify=true
+Categories=Qt;System;
+X-AppStream-Ignore=true
