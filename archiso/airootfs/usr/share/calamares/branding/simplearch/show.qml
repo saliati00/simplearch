@@ -13,15 +13,15 @@ Presentation
     }
 
     Slide {
-        centeredText: qsTr("Instalando o SimpleArch")
+        centeredText: qsTr("Installing SimpleArch")
     }
 
     Slide {
-        centeredText: qsTr("Preparando KDE Plasma, Btrfs e snapshots")
+        centeredText: qsTr("Preparing KDE Plasma, Btrfs and snapshots")
     }
 
     Slide {
-        centeredText: qsTr("Configurando o sistema para o primeiro boot")
+        centeredText: qsTr("Configuring the system for first boot")
     }
 
     function onActivate() {

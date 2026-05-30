@@ -1,32 +1,30 @@
 # Simple Arch
 
-Simple Arch e um projeto que visa facilitar a instalacao do Arch Linux trazendo
-por padrao um desktop completo e utilizavel, sem excessos e sem grandes tweaks:
-apenas uma base solida.
+Simple Arch is a project focused on making Arch Linux installation easier by
+providing a complete and usable desktop by default, without excess packages or
+heavy tweaks: just a solid base.
 
-O projeto conta com yay e Flatpak habilitados por padrao, alem de snapshots
-configurados com Btrfs, Snapper e grub-btrfs para facilitar a recuperacao do
-sistema caso algo quebre apos updates ou alteracoes no sistema.
+The project includes Flatpak by default, plus snapshots configured with Btrfs,
+Snapper and grub-btrfs to make system recovery easier if something breaks after
+updates or local changes.
 
-Simple Arch utiliza pacotes dos repositorios oficiais do Arch Linux e, quando
-necessario, do AUR. O projeto nao tem como objetivo depender de repositorios de
-terceiros para compor o sistema.
+Simple Arch uses packages from the official Arch Linux repositories and, when
+needed, from the AUR. The project does not aim to depend on third-party
+repositories to assemble the system.
 
 ## Status
 
-Simple Arch esta em desenvolvimento inicial. A ISO live ja usa KDE Plasma e
-Calamares, mas o fluxo completo de instalacao ainda esta sendo validado.
+Simple Arch is in early development. The live ISO already uses KDE Plasma and
+Calamares, and the first full installation flow has been validated in a virtual
+machine. Wider hardware, snapshot and rollback testing is still pending.
 
-## Documentacao
+## Documentation
 
-- Escopo do projeto: [SCOPE.md](SCOPE.md)
-- Perfil da ISO: [archiso/](archiso/)
-- Scripts de build: [scripts/](scripts/)
+- Project scope: [SCOPE.md](SCOPE.md)
+- ISO profile: [archiso/](archiso/)
+- Build scripts: [scripts/](scripts/)
 
-## Disclaimer / Isencao de Responsabilidade
-
-Simple Arch e um projeto independente e de codigo aberto, nao sendo afiliado,
-endossado, patrocinado ou mantido pelo Arch Linux.
+## Disclaimer
 
 Simple Arch is an independent open-source project and is not affiliated with,
 endorsed, sponsored, or maintained by Arch Linux.

@@ -1,49 +1,48 @@
 # Scripts
 
-Esta pasta vai conter scripts auxiliares usados pelo build da ISO e pelo
-Calamares.
+This directory contains helper scripts used by the ISO build and by Calamares.
 
-Escopo inicial:
+Initial scope:
 
-- configuracao pos-instalacao em chroot
-- configuracao do Snapper, grub-btrfs e Btrfs Assistant
-- instalacao do yay
-- configuracao do Zsh e Oh My Zsh
-- ajustes de drivers de video
+- post-installation configuration in chroot
+- Snapper, grub-btrfs and Btrfs Assistant configuration
+- optional AUR helper policy and integration
+- Zsh configuration
+- video driver adjustments
 
-Build local:
+Local build:
 
 ```bash
 ./scripts/build-iso.sh
 ```
 
-Por padrao, o build usa `~/simplearch-build/work` e
-`~/simplearch-build/out`. Para trocar:
+By default, the build uses `~/simplearch-build/work` and
+`~/simplearch-build/out`. To override this:
 
 ```bash
-BUILD_ROOT=/caminho/para/build ./scripts/build-iso.sh
+BUILD_ROOT=/path/to/build ./scripts/build-iso.sh
 ```
 
-Gerar pacote local do Calamares:
+Build the local Calamares package:
 
 ```bash
 ./scripts/build-calamares-package.sh
 ```
 
-Criar o repositorio pacman local para pacotes gerados em `packages/`:
+Create the local pacman repository for packages generated under `packages/`:
 
 ```bash
 ./scripts/build-local-repo.sh
 ```
 
-O `build-iso.sh` chama esse script automaticamente se o repositorio local ainda
-nao existir.
+`build-iso.sh` calls this script automatically if the local repository does not
+exist yet.
 
-Criar o repositorio offline de pacotes opcionais usado pelo seletor de GPU:
+Create the offline optional package repository used by the GPU selector:
 
 ```bash
 ./scripts/build-optional-repo.sh
 ```
 
-O `build-iso.sh` tambem chama esse script automaticamente e copia o resultado
-para `airootfs/opt/simplearch/offline-repo` no perfil temporario da ISO.
+`build-iso.sh` also calls this script automatically and copies the result to
+`airootfs/opt/simplearch/offline-repo` in the temporary ISO profile.

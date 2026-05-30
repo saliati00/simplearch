@@ -1,14 +1,12 @@
 # Vendor
 
-Esta pasta guarda fontes externos usados temporariamente durante o
-desenvolvimento.
+This directory stores external sources used temporarily during development.
 
-Atualmente:
+Current contents:
 
-- `calamares-3.4.2.tar.gz`: source upstream do Calamares usado para gerar um
-  pacote Arch local, ja que `calamares` nao esta nos repositorios oficiais do
-  Arch neste ambiente.
+- `calamares-3.4.2.tar.gz`: upstream Calamares source used to build a local
+  Arch package, because `calamares` is not available in the official Arch
+  repositories in this environment.
 
-No futuro, o ideal e substituir isso por um fluxo reproduzivel com pacote
-proprio, repositorio proprio de pacotes ou uma etapa de build documentada no CI.
-
+In the future, this should ideally be replaced by a reproducible flow with a
+custom package, a custom package repository, or a documented CI build step.

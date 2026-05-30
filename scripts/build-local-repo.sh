@@ -15,7 +15,7 @@ LOCAL_REPO="$BUILD_ROOT/localrepo"
 REPO_DB="$LOCAL_REPO/simplearch-local.db.tar.gz"
 
 if ! command -v repo-add >/dev/null 2>&1; then
-  echo "repo-add nao encontrado. Instale pacman-contrib primeiro." >&2
+  echo "repo-add not found. Install pacman-contrib first." >&2
   exit 1
 fi
 
@@ -26,8 +26,8 @@ mapfile -t packages < <(
 )
 
 if [ "${#packages[@]}" -eq 0 ]; then
-  echo "Nenhum pacote local encontrado em packages/." >&2
-  echo "Gere o Calamares primeiro:" >&2
+  echo "No local packages found in packages/." >&2
+  echo "Build Calamares first:" >&2
   echo "  ./scripts/build-calamares-package.sh" >&2
   exit 1
 fi
@@ -41,5 +41,4 @@ done
 
 repo-add "$REPO_DB" "${copied_packages[@]}"
 
-echo "Repositorio local criado em: $LOCAL_REPO"
-
+echo "Local repository created at: $LOCAL_REPO"

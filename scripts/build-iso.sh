@@ -18,16 +18,16 @@ OPTIONAL_REPO="$BUILD_ROOT/optional-repo"
 PROFILE_DIR="$BUILD_ROOT/profile"
 
 if ! command -v mkarchiso >/dev/null 2>&1; then
-  echo "mkarchiso nao encontrado. Instale o pacote archiso primeiro:" >&2
+  echo "mkarchiso not found. Install the archiso package first:" >&2
   echo "  sudo pacman -S --needed archiso" >&2
   exit 1
 fi
 
 if ! sudo -n true 2>/dev/null; then
-  echo "sudo precisa estar autenticado no terminal que executa este script." >&2
-  echo "Rode primeiro:" >&2
+  echo "sudo must be authenticated in the terminal running this script." >&2
+  echo "Run first:" >&2
   echo "  sudo -v" >&2
-  echo "Depois execute novamente:" >&2
+  echo "Then run again:" >&2
   echo "  ./scripts/build-iso.sh" >&2
   exit 1
 fi

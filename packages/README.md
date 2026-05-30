@@ -1,15 +1,14 @@
-# Pacotes Locais
+# Local Packages
 
-Esta pasta guarda receitas de empacotamento para componentes que nao estao nos
-repositorios oficiais do Arch, mas sao necessarios para a ISO.
+This directory stores packaging recipes for components that are not available in
+the official Arch repositories but are required by the ISO.
 
-Pacotes atuais:
+Current packages:
 
-- `calamares`: construido a partir de `vendor/calamares-3.4.2.tar.gz`.
+- `calamares`: built from `vendor/calamares-3.4.2.tar.gz`.
 
-Fluxo planejado:
+Planned flow:
 
-1. Gerar o pacote com `makepkg`.
-2. Criar um repositorio pacman local com `repo-add`.
-3. Fazer o `archiso` consumir esse repositorio local durante o build.
-
+1. Build the package with `makepkg`.
+2. Create a local pacman repository with `repo-add`.
+3. Make `archiso` consume that local repository during the build.
