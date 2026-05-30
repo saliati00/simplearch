@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -d /sys/firmware/efi ]]; then
+    cat >&2 <<'EOF'
+SimpleArch must be installed from an UEFI boot.
+
+This live session is running in BIOS/Legacy mode, so GRUB would be installed
+with the i386-pc target and the EFI partition layout would not be created.
+
+Reboot the ISO using UEFI/OVMF firmware and start the installer again.
+EOF
+    exit 1
+fi
+
+if ! efibootmgr >/dev/null 2>&1; then
+    cat >&2 <<'EOF'
+UEFI firmware was detected, but efibootmgr could not access EFI variables.
+
+Check the VM or firmware configuration and make sure EFI variables are
+available before installing SimpleArch.
+EOF
+    exit 1
+fi

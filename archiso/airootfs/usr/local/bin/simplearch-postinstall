@@ -11,6 +11,24 @@ fi
 
 echo "Preparing Simple Arch defaults for ${username:-created user}."
 
+if arch-chroot "$target" id simplearch >/dev/null 2>&1; then
+    arch-chroot "$target" userdel -r simplearch || arch-chroot "$target" userdel simplearch || true
+fi
+
+arch-chroot "$target" groupdel simplearch >/dev/null 2>&1 || true
+rm -rf \
+    "$target/home/simplearch" \
+    "$target/etc/plasmalogin.conf" \
+    "$target/etc/sddm.conf.d/10-simplearch-live.conf" \
+    "$target/etc/sysusers.d/simplearch.conf" \
+    "$target/etc/tmpfiles.d/simplearch.conf"
+
+arch-chroot "$target" pacman -Rns --noconfirm calamares >/dev/null 2>&1 || true
+rm -f \
+    "$target/etc/skel/Desktop/simplearch-install.desktop" \
+    "$target/usr/share/applications/calamares.desktop" \
+    "$target/usr/share/applications/simplearch-install.desktop"
+
 install -d -m 755 "$target/boot" "$target/etc/mkinitcpio.d"
 
 if [[ ! -r "$target/boot/vmlinuz-linux" ]]; then
@@ -68,6 +86,38 @@ FILES=()
 HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block filesystems fsck)
 EOF
 
+target_lang="$(grep -E '^LANG=' "$target/etc/locale.conf" 2>/dev/null | tail -n1 | cut -d= -f2- || true)"
+target_lang="${target_lang:-en_US.UTF-8}"
+translation_lang="${target_lang%%.*}"
+translation_base="${translation_lang%%_*}"
+
+sed -i \
+    -e "s/^#\?${target_lang} UTF-8/${target_lang} UTF-8/" \
+    -e 's/^#\?en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' \
+    "$target/etc/locale.gen"
+
+cat > "$target/etc/vconsole.conf" <<'EOF'
+KEYMAP=us
+EOF
+
+install -d -m 755 "$target/etc/xdg"
+cat > "$target/etc/xdg/plasma-localerc" <<EOF
+[Formats]
+LANG=$target_lang
+
+[Translations]
+LANGUAGE=$translation_lang:$translation_base
+EOF
+
+cat > "$target/etc/xdg/kdeglobals" <<EOF
+[Locale]
+Language=$translation_lang
+Languages=$translation_lang,$translation_base
+
+[Translations]
+LANGUAGE=$translation_lang:$translation_base
+EOF
+
 arch-chroot "$target" locale-gen
 
 if [[ -f "$target/etc/pacman.conf" ]] && ! grep -q '^\[multilib\]' "$target/etc/pacman.conf"; then
@@ -87,6 +137,25 @@ EOF
 
 if [[ -n "$username" && -d "$target/home/$username" ]]; then
     arch-chroot "$target" chsh -s /bin/zsh "$username"
+    rm -f "$target/home/$username/Desktop/simplearch-install.desktop"
+
+    install -d -m 700 "$target/home/$username/.config"
+    cat > "$target/home/$username/.config/plasma-localerc" <<EOF
+[Formats]
+LANG=$target_lang
+
+[Translations]
+LANGUAGE=$translation_lang:$translation_base
+EOF
+    cat > "$target/home/$username/.config/kdeglobals" <<EOF
+[Locale]
+Language=$translation_lang
+Languages=$translation_lang,$translation_base
+
+[Translations]
+LANGUAGE=$translation_lang:$translation_base
+EOF
+    arch-chroot "$target" chown -R "$username:$username" "/home/$username/.config"
 fi
 
 mkdir -p "$target/etc/snapper/configs"

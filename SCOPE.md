@@ -9,13 +9,16 @@ SimpleArch.
 - ISO construida com `archiso`, a partir de um perfil `releng` modificado.
 - Ambiente live com KDE Plasma e instalador Calamares.
 - Desktop instalado com `plasma-meta`.
-- Boot UEFI com GRUB.
+- Boot UEFI com GRUB; boot BIOS fica fora do escopo inicial.
 - Filesystem Btrfs obrigatorio para permitir snapshots e rollback.
-- NetworkManager, PipeWire, Bluetooth, UFW, Flatpak e zram com zstd por padrao.
-- Locale `pt_BR.UTF-8`, teclado `us` e timezone `America/Fortaleza` como base
-  inicial.
+- NetworkManager, PipeWire, Bluetooth, UFW, Flatpak, plasma-login-manager e
+  zram com zstd por padrao.
+- Live ISO em ingles por padrao, com suporte a `pt_BR.UTF-8` disponivel no
+  instalador. Idioma, teclado e timezone devem seguir a escolha do usuario no
+  Calamares.
 - `multilib` habilitado.
 - Firefox como navegador padrao.
+- MPV como reprodutor de video padrao.
 - Zsh com Oh My Zsh por padrao para o usuario criado na instalacao.
 - Pacotes de jogos nao entram na instalacao padrao.
 
@@ -88,7 +91,8 @@ Entram como base:
   GRUB.
 - KDE Plasma via `plasma-meta`.
 - Ferramentas basicas do KDE, como Dolphin, Konsole, Ark, Gwenview, Okular,
-  Spectacle, Discover e System Settings quando nao vierem pelo meta pacote.
+  Spectacle, Discover, MPV e System Settings quando nao vierem pelo meta
+  pacote.
 - Rede, audio, bluetooth, firewall, portais XDG e Flatpak.
 - Ferramentas essenciais de terminal e manutencao: `sudo`, `git`, `curl`,
   `wget`, `vim` ou `nano`, `htop`, `ripgrep`, `openssh`, `usbutils`,

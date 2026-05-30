@@ -1,7 +1,4 @@
 [Locale]
-Country=br
-Language=pt_BR
-Languages=pt_BR,pt
-
-[Translations]
-LANGUAGE=pt_BR:pt
+Country=us
+Language=en_US
+Languages=en_US,en

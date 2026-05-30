@@ -42,7 +42,7 @@ spice-vdagent
 # Desktop live environment
 plasma-meta
 xcb-util-cursor
-sddm
+plasma-login-manager
 konsole
 dolphin
 kate
@@ -53,6 +53,7 @@ spectacle
 discover
 firefox
 firefox-i18n-pt-br
+mpv
 
 # Calamares installer
 calamares
